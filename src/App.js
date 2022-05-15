@@ -1,84 +1,63 @@
-import './scss/style.scss';
-import pic1 from './img/rank-1.png'
-import { faImages } from '@fortawesome/free-regular-svg-icons';
-import Card from './Card'
-/*
-  리액트 컴포넌트에서 이미지소스 불러오는 방법
-  scr : 각각의 이미지를 import한 다음에 이미지 태그의 src 속성에 적용 (단점: 모든 컴포넌트 파일마다 일일히 import)
-  public : public폴더 안쪽에 있는 이미지들을 process.env.PUBLIC_URL 구문으로 public 폴더까지의 절대경로를 구해 직접 출력하는 방법
-
-*/
+import './scss/style.scss'
+import { useState } from 'react'
 
 function App() {
-  const colors = ['aqua', 'orange', 'lightgreen', 'hotpink']
-  let isPop = true; // boolean 값은 let
+  console.log('App');
 
-  //이미지 명만으로 배열 생성
-  const path = process.env.PUBLIC_URL;
-  const imgs = ['rank-1', 'rank-2', 'rank-1'];
+  // 리액트 컴포넌트는 내부에 있는 state값이 변경될 때 자동으로 재렌더링됨
+  // useState - 컴포넌트 내부에서 state를 생성하고 해당 state를 변경할 수 있는 함수를 생성하는 hook
+  // 리액트에서 화면의 변화를 관장하는 모든 정보값을 무조건 state에 담아서 관리
+  // 배열이나 객체같은 참조형 자료값은 무조건 전개연산자로 기존 값을 deep copy한 다음에 state 변경함수로 바꿔치기 해야함
 
+  // const [초기값, 변경된값]
+  //const abc = useState('변경 전');
+  //console.log(abc);
+
+  const [data, setData] = useState('변경 전');
+  let [data2, setData2] = useState('변경 전');
+
+  const arr = ['red', 'green', 'blue'];
+  const [colors, setColors] = useState(arr);
   return (
     <div className="App">
-      <h3 className="titleHowto">배열로 하나씩 스타일 적용</h3>
+      {/* 버튼 클릭 시 state변경함수로 기존 state값 수정 */}
+      <button onClick={() => setData('변경 후')}>{data} useState로</button>
+
+
+      <button onClick={() => {
+        //data2 = '변경 후'; // setData2 를 사용하지 않으면 변경된 값으로 바뀌지 않음
+        //console.log(data2);
+        setData2('이게 변경되어야 함');
+      }}>{data2} 스크립트로 </button>
+
+      <h3 className="titleHowto">배열로 변경하기</h3>
+      <button onClick={() => {
+        /*         
+        colors[0] = 'hotpink';
+        setColors(colors);
+        // 이렇게만 해서는 화면에 변경되어 풀력되지 않는다.
+        // 왜? 불변성을 해치고 원본이 바뀌어서 참조x
+        // 해결 ? spread 연산자로 기존 배열을 완전 복사한 뒤
+
+        // 불편성 (immutable)
+        // - 리액트에는 특정 스테잍 값을 변경할 때 절대 원본으 훼손하지 않고
+        // 복사본을 만들어야됨 (참조형 자료일 때)
+        */
+        // => 기존의 참조형 자료값을 deep copy
+        const newColors = [...colors];
+        newColors[0] = 'hotpink';
+        setColors(newColors);
+
+
+        //setColors(['aqua', 'yellow', 'orange']);
+      }}>배열 state변경</button>
+
       <ul>
-        <li style={{ color: colors[0] }}> aqua </li>
-        <li style={{ color: colors[1] }}> orange </li>
-        <li style={{ color: colors[2] }}> lightgrenn </li>
-        <li style={{ color: colors[3] }}> hotpink </li>
-      </ul>
-
-      <br />
-
-      <h3 className="titleHowto">map을 이용하여 반복문으로 변경</h3>
-      {/* map안에는 콜백함수 들어감 */}
-      <ul>
-        {colors.map((color, idx) => {
-          const style = { color: color }
-          // 가상돔을 반복돌 때에는 무조건 key값에 고유값을 부여해야 한다. (사실 idx 번호로는 잘 넣지 않음..) 
-          return <li key={idx} style={style}>{color}</li>;
-        })}
-      </ul>
-
-      <br />
-      <hr />
-      <br />
-
-      {/* return문 안쪽에서 삼항연산자를 이용하여 가상돔 출력을 분기처리 가능 */}
-      <h3 className="titleHowto">3항 연산자로 조건문 처리</h3>
-      {isPop ? <aside>Popup</aside> : null}
-
-      <br />
-      <hr />
-      <br />
-
-      <h3 className="titleHowto">이미지처리</h3>
-      <img src={pic1} alt="test img" width="100px" />
-
-      <h3 className="titleHowto">public으로 이미지 처리</h3>
-      {
-        imgs.map((img, idx) => (
-          // 화살표 뒤에 괄호로 return문 생략 가능
-          // public 폴더까지의 경로값을 구해서 바로 이미지 소스 호출 가능
-          // <img key={idx} src={path + '/img/' + img + '.png'} />
-          <img key={idx} src={`${path}/img/${img}.png`} alt={img} width="100px" />
+        {colors.map((color, idx) => (
+          <li key={idx}>{color}</li>
         )
-        )
-      }
-
-      <br />
-      <hr />
-      <br />
-      <h3 className="titleHowto">props 전달하여 map으로 이미지 불러오기</h3>
-      <section>
-        {imgs.map((img, idx) => {
-          return (
-            // 부모에서 자식 컴포넌트로 특정값을 전달할 때에는 props로 전달
-            // key값은 props로 전달 x 
-            <Card key={idx} img={img} path={path} />
-          )
-        })}
-      </section>
-
+        )}
+      </ul>
     </div >
   );
 }
