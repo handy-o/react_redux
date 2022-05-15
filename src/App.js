@@ -19,7 +19,7 @@ function App() {
 
       <h2 style={fontStyle}>이벤트 발생 시 이벤트가 발생한 대상을 참조해서 스타일 변경</h2>
 
-      <h3 onclic={(e) => (e.target.style.color = 'red')}>이벤트 발생 시 이벤트가 발생한 대상을 참조해서 스타일 변경</h3>
+      <h3 onClick={(e) => (e.target.style.color = 'red')}>이벤트 발생 시 이벤트가 발생한 대상을 참조해서 스타일 변경</h3>
     </div>
   );
 }
